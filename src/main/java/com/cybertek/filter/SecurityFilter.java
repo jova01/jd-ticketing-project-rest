@@ -34,7 +34,6 @@ public class SecurityFilter extends OncePerRequestFilter {
         String authorizationHeader = httpServletRequest.getHeader("Authorization");
         String token = null;
         String username = null;
-
         if (authorizationHeader != null) {
             token = authorizationHeader.replace("Bearer","");
             username = jwtUtil.extractUsername(token);
@@ -52,6 +51,9 @@ public class SecurityFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
+
+
+
     }
 
     private boolean checkIfUserIsValid(String username) {

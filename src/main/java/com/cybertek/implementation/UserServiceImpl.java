@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
         dto.setEnabled(true);
 
         User obj= mapperUtil.convertTo(dto, new User());
-        obj.setPassword(passwordEncoder.encode(obj.getPassword()));
+        obj.setPassWord(passwordEncoder.encode(obj.getPassWord()));
 
         userRepository.save(obj);
     }
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUserName(dto.getUserName());
 
         User convertedUser = mapperUtil.convertTo(dto, new User());
-        convertedUser.setPassword(passwordEncoder.encode(convertedUser.getPassword()));
+        convertedUser.setPassWord(passwordEncoder.encode(convertedUser.getPassWord()));
         convertedUser.setEnabled(true);
         convertedUser.setId(user.getId());
 

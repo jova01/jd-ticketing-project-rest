@@ -33,7 +33,7 @@ public class SecurityServiceImpl implements SecurityService {
         }
 
 
-        return new org.springframework.security.core.userdetails.User(user.getId().toString(), user.getPassword(), listAuthorities(user));
+        return new org.springframework.security.core.userdetails.User(user.getId().toString(), user.getPassWord(), listAuthorities(user));
     }
 
     @Override
