@@ -12,10 +12,15 @@ import com.cybertek.service.TaskService;
 import com.cybertek.service.UserService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +50,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO findByUserName(String username) {
         User user = userRepository.findByUserName(username);
+        checkForAuthorities(user);
         return mapperUtil.convertTo(user,new UserDTO());
     }
 
@@ -78,6 +84,12 @@ public class UserServiceImpl implements UserService {
         //Map update user dto to entity object
         User convertedUser = mapperUtil.convertTo(dto,new User());
         convertedUser.setPassWord(passwordEncoder.encode(convertedUser.getPassWord()));
+
+        if(!user.getEnabled()){
+            throw new TicketingProjectException("User is not confirmed");
+        }
+
+        checkForAuthorities(user);
         convertedUser.setEnabled(true);
 
         //set id to the converted object
@@ -141,5 +153,18 @@ public class UserServiceImpl implements UserService {
         User confirmedUser = userRepository.save(user);
 
         return mapperUtil.convertTo(confirmedUser,new UserDTO());
+    }
+
+    private void checkForAuthorities(User user){
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication != null && !authentication.getName().equals("anonymousUser")){
+
+            Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+
+            if(!(authentication.getName().equals(user.getId().toString()) || roles.contains("Admin"))){
+                throw new AccessDeniedException("Access is denied");
+            }
+        }
     }
 }

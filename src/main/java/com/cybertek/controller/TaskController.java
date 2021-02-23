@@ -89,16 +89,21 @@ public class TaskController {
 
     @GetMapping("/employee")
     @DefaultExceptionMessage(defaultMessage = "Something went wrong, please try again!")
-    @Operation(summary = "Read All non complete tasks")
+    @Operation(summary = "Read all non complete tasks")
     @PreAuthorize("hasAuthority('Employee')")
     public ResponseEntity<ResponseWrapper> employeeReadAllNonCompletedTask() throws TicketingProjectException {
         List<TaskDTO> tasks = taskService.listAllTaskByStatusIsNot(Status.COMPLETE);
         return ResponseEntity.ok(new ResponseWrapper("Successfully read non completed current user tasks!",tasks));
     }
 
+
+    @PutMapping("/employee/update")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong, please try again!")
+    @Operation(summary = "Read employee task")
+    @PreAuthorize("hasAuthority('Employee')")
     public ResponseEntity<ResponseWrapper> employeeUpdateTask(@RequestBody TaskDTO taskDTO) throws TicketingProjectException {
         TaskDTO task = taskService.updateStatus(taskDTO);
-        return ResponseEntity.ok(new ResponseWrapper("Successfully employee task status updated"));
+        return ResponseEntity.ok(new ResponseWrapper("Successfully employee task status updated",task));
     }
 
 
