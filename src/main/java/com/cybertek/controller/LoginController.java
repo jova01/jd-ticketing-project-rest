@@ -1,12 +1,15 @@
 package com.cybertek.controller;
 
 import com.cybertek.annotation.DefaultExceptionMessage;
+import com.cybertek.dto.MailDTO;
 import com.cybertek.dto.UserDTO;
+import com.cybertek.entity.ConfirmationToken;
 import com.cybertek.entity.ResponseWrapper;
 import com.cybertek.entity.User;
 import com.cybertek.entity.common.AuthenticationRequest;
 import com.cybertek.exception.TicketingProjectException;
 import com.cybertek.mapper.MapperUtil;
+import com.cybertek.service.ConfirmationTokenService;
 import com.cybertek.service.UserService;
 import com.cybertek.util.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,12 +30,14 @@ public class LoginController {
 	private UserService userService;
 	private MapperUtil mapperUtil;
 	private JWTUtil jwtUtil;
+	private ConfirmationTokenService confirmationTokenService;
 
-	public LoginController(AuthenticationManager authenticationManager, UserService userService, MapperUtil mapperUtil, JWTUtil jwtUtil) {
+	public LoginController(AuthenticationManager authenticationManager, UserService userService, MapperUtil mapperUtil, JWTUtil jwtUtil, ConfirmationTokenService confirmationTokenService) {
 		this.authenticationManager = authenticationManager;
 		this.userService = userService;
 		this.mapperUtil = mapperUtil;
 		this.jwtUtil = jwtUtil;
+		this.confirmationTokenService = confirmationTokenService;
 	}
 
 	@PostMapping("/authenticate")
@@ -59,8 +64,17 @@ public class LoginController {
 
 	}
 
+	@DefaultExceptionMessage(defaultMessage = "Failed to confirm email, try again!")
+	@GetMapping("/confirmation")
+	@Operation(summary = "Confirm account")
+	public ResponseEntity<ResponseWrapper> confirmEmail(@RequestParam String token) throws TicketingProjectException {
+		ConfirmationToken confirmationToken = confirmationTokenService.readByToken(token);
 
+		UserDTO confirmedUser = userService.confirm(confirmationToken.getUser());
+		confirmationTokenService.delete(confirmationToken);
 
+		return ResponseEntity.ok(new ResponseWrapper("User has been confirmed!", confirmedUser));
 
+	}
 
 }

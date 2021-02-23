@@ -1,6 +1,8 @@
 package com.cybertek.entity;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.Entity;
@@ -13,6 +15,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "confirmation_email")
 @Where(clause = "is_deleted=false")
+@Getter
+@Setter
 @NoArgsConstructor
 public class ConfirmationToken extends BaseEntity{
 

@@ -5,16 +5,17 @@ import com.cybertek.dto.TaskDTO;
 import com.cybertek.entity.Task;
 import com.cybertek.entity.User;
 import com.cybertek.enums.Status;
+import com.cybertek.exception.TicketingProjectException;
 
 import java.util.*;
 
 public interface TaskService {
 
-    TaskDTO findById(Long id);
+    TaskDTO findById(Long id) throws TicketingProjectException;
     List<TaskDTO> listAllTasks();
-    Task save(TaskDTO dto);
-    void update(TaskDTO dto);
-    void delete(Long id);
+    TaskDTO save(TaskDTO dto);
+    TaskDTO update(TaskDTO dto) throws TicketingProjectException;
+    void delete(Long id) throws TicketingProjectException;
 
     int totalNonCompletedTasks(String projectCode);
     int totalCompletedTasks(String projectCode);
@@ -23,13 +24,13 @@ public interface TaskService {
 
     List<TaskDTO> listAllByProject(ProjectDTO project);
 
-    List<TaskDTO> listAllTaskByStatusIsNot(Status status);
+    List<TaskDTO> listAllTaskByStatusIsNot(Status status) throws TicketingProjectException;
 
-    List<TaskDTO> listAllTasksByProjectManager();
+    List<TaskDTO> listAllTasksByProjectManager() throws TicketingProjectException;
 
-    void updateStatus(TaskDTO taskDTO);
+    TaskDTO updateStatus(TaskDTO taskDTO) throws TicketingProjectException;
 
-    List<TaskDTO> listAllTaskByStatus(Status status);
+//    List<TaskDTO> listAllTaskByStatus(Status status);
 
     List<TaskDTO> readAllByEmployee(User user);
 
