@@ -15,6 +15,7 @@ import lombok.Setter;
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer"},ignoreUnknown = true)
 public class UserDTO {
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     private String firstName;
@@ -24,6 +25,7 @@ public class UserDTO {
     private String passWord;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String confirmPassword;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean enabled;
     private String phone;
     private RoleDTO role;

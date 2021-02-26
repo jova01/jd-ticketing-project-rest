@@ -53,7 +53,7 @@ public class LoginController {
 		User convertedUser = mapperUtil.convertTo(foundUser,new User());
 
 		if(!foundUser.isEnabled()){
-			throw new TicketingProjectException("Please verify your user");
+			throw new TicketingProjectException("Please verify your user!");
 		}
 
 		String jwtToken = jwtUtil.generateToken(convertedUser);

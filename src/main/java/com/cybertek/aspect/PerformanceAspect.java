@@ -14,23 +14,21 @@ public class PerformanceAspect {
 
 
     @Pointcut("@annotation(com.cybertek.annotation.ExecutionTime)")
-    public void anyExecutionTimeOperation(){}
+    public void anyExecutionTimeOperation() {
+    }
 
     @Around("anyExecutionTimeOperation()")
-    public Object anyExecutionTimeOperationAdvice(ProceedingJoinPoint proceedingJoinPoint){
+    public Object anyExecutionTimeOperationAdvice(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
 
         long beforeTime = System.currentTimeMillis();
         Object result = null;
 
-        try {
-            result = proceedingJoinPoint.proceed();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+        result = proceedingJoinPoint.proceed();
+
 
         long afterTime = System.currentTimeMillis();
 
-        log.info("Time taken to execute: {} ms Methog:{} - Parameters:{}", (afterTime-beforeTime), proceedingJoinPoint.getSignature().toShortString(), proceedingJoinPoint.getArgs());
+        log.info("Time taken to execute: {} ms Methog:{} - Parameters:{}", (afterTime - beforeTime), proceedingJoinPoint.getSignature().toShortString(), proceedingJoinPoint.getArgs());
 
         return result;
     }
